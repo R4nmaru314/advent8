@@ -13,7 +13,12 @@ const file = "input.txt"
 func main() {
 	file, _ := os.Open(file)
 	scanner := bufio.NewScanner(file)
-	grid := make(map[int][]int)
+
+	var grid = make(map[int][]int)
+	var outsideTrees int
+	var insideTrees int
+	var maxScenicScore int
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		values := strings.Split(line, "")
@@ -24,44 +29,36 @@ func main() {
 			}
 		}
 	}
-	outsideTrees := calculateOutsideTrees(grid)
-	insideTrees, maxScenicScore := calculateInsideTreesAndMaxScenicScore(grid)
+	calculateOutsideTrees(grid, &outsideTrees)
+	calculateInsideTreesAndMaxScenicScore(grid, &insideTrees, &maxScenicScore)
 	log.Printf("Trees Outside: %d , Trees Inside: %d", outsideTrees, insideTrees)
 	log.Printf("total: %d", outsideTrees+insideTrees)
 	log.Printf("maxScenicScore: %d", maxScenicScore)
 }
 
-func calculateOutsideTrees(grid map[int][]int) int {
-	return 2*len(grid) + 2*len(grid[0]) - 4
+func calculateOutsideTrees(grid map[int][]int, outsideTrees *int) {
+	*outsideTrees = 2*len(grid) + 2*len(grid[0]) - 4
 }
 
-func calculateInsideTreesAndMaxScenicScore(grid map[int][]int) (int, int) {
-	insideTrees := 0
-	maxScenicScore := 0
+func calculateInsideTreesAndMaxScenicScore(grid map[int][]int, insideTrees *int, maxScenicScore *int) {
 	for height := 1; height < len(grid)-1; height++ {
 		for length := 1; length < len(grid[0])-1; length++ {
 			treeToCheck := grid[height][length]
-			if calculatePart1(grid, height, length, treeToCheck) {
-				insideTrees++
-			}
-			calculatePart2(grid, height, length, treeToCheck, &maxScenicScore)
+			calculatePart1(grid, height, length, treeToCheck, insideTrees)
+			calculatePart2(grid, height, length, treeToCheck, maxScenicScore)
 		}
 	}
-
-	return insideTrees, maxScenicScore
 }
 
-func calculatePart1(grid map[int][]int, height int, length int, treeToCheck int) bool {
+func calculatePart1(grid map[int][]int, height int, length int, treeToCheck int, insideTrees *int) {
 	if calculatePart1Left(grid, height, length, treeToCheck) {
-		return true
+		*insideTrees++
 	} else if calculatePart1Right(grid, height, length, treeToCheck) {
-		return true
+		*insideTrees++
 	} else if calculatePart1Top(grid, height, length, treeToCheck) {
-		return true
+		*insideTrees++
 	} else if calculatePart1Bottom(grid, height, length, treeToCheck) {
-		return true
-	} else {
-		return false
+		*insideTrees++
 	}
 }
 
