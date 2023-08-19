@@ -44,33 +44,47 @@ func calculateInsideTreesAndMaxScenicScore(grid map[int][]int, insideTrees *int,
 	for height := 1; height < len(grid)-1; height++ {
 		for length := 1; length < len(grid[0])-1; length++ {
 			treeToCheck := grid[height][length]
-			calculatePart1(grid, height, length, treeToCheck, insideTrees)
-			calculatePart2(grid, height, length, treeToCheck, maxScenicScore)
+			left, right, top, bottom := calculateSides(grid, height, length)
+			calculatePart1(left, right, top, bottom, treeToCheck, insideTrees)
+			calculatePart2(left, right, top, bottom, treeToCheck, maxScenicScore)
 		}
 	}
 }
 
-func calculatePart1(grid map[int][]int, height int, length int, tree int, insideTrees *int) {
-	if calculateLinePart1(calculateLeft(grid, height, length), tree) {
+func calculatePart1(left, right, top, bottom []int, tree int, insideTrees *int) {
+	if calculateLinePart1(left, tree) {
 		*insideTrees++
-	} else if calculateLinePart1(calculateRight(grid, height, length), tree) {
+	} else if calculateLinePart1(right, tree) {
 		*insideTrees++
-	} else if calculateLinePart1(calculateTop(grid, height, length), tree) {
+	} else if calculateLinePart1(top, tree) {
 		*insideTrees++
-	} else if calculateLinePart1(calculateBottom(grid, height, length), tree) {
+	} else if calculateLinePart1(bottom, tree) {
 		*insideTrees++
 	}
 }
 
-func calculatePart2(grid map[int][]int, height int, length int, tree int, maxScenicScore *int) {
-	left := calculatePart2Left(grid, height, length, tree)
-	right := calculatePart2Right(grid, height, length, tree)
-	top := calculatePart2Top(grid, height, length, tree)
-	bottom := calculatePart2Bottom(grid, height, length, tree)
-	scenicScore := left * right * top * bottom
+func calculatePart2(left, right, top, bottom []int, tree int, maxScenicScore *int) {
+	reverseIntArrayPart2(left)
+	reverseIntArrayPart2(right)
+	reverseIntArrayPart2(top)
+	reverseIntArrayPart2(bottom)
+	leftScore := calculateLinePart2(left, tree)
+	rightScore := calculateLinePart2(right, tree)
+	topScore := calculateLinePart2(top, tree)
+	bottomScore := calculateLinePart2(bottom, tree)
+	scenicScore := leftScore * rightScore * topScore * bottomScore
 	if scenicScore > *maxScenicScore {
 		*maxScenicScore = scenicScore
 	}
+}
+
+func calculateSides(grid map[int][]int, height int, length int) ([]int, []int, []int, []int) {
+	left := calculateLeft(grid, height, length)
+	right := calculateRight(grid, height, length)
+	top := calculateTop(grid, height, length)
+	bottom := calculateBottom(grid, height, length)
+
+	return left, right, top, bottom
 }
 
 func calculateLeft(grid map[int][]int, height int, length int) []int {
@@ -103,30 +117,6 @@ func calculateBottom(grid map[int][]int, height int, length int) []int {
 		bottom = append(bottom, grid[i-1][length])
 	}
 	return bottom
-}
-
-func calculatePart2Left(grid map[int][]int, height int, length int, tree int) int {
-	left := calculateLeft(grid, height, length)
-	reverseIntArrayPart2(left)
-	return calculateLinePart2(left, tree)
-}
-
-func calculatePart2Right(grid map[int][]int, height int, length int, tree int) int {
-	right := calculateRight(grid, height, length)
-	reverseIntArrayPart2(right)
-	return calculateLinePart2(right, tree)
-}
-
-func calculatePart2Top(grid map[int][]int, height int, length int, tree int) int {
-	top := calculateTop(grid, height, length)
-	reverseIntArrayPart2(top)
-	return calculateLinePart2(top, tree)
-}
-
-func calculatePart2Bottom(grid map[int][]int, height int, length int, tree int) int {
-	bottom := calculateBottom(grid, height, length)
-	reverseIntArrayPart2(bottom)
-	return calculateLinePart2(bottom, tree)
 }
 
 func calculateLinePart1(array []int, tree int) bool {
