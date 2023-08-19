@@ -50,14 +50,14 @@ func calculateInsideTreesAndMaxScenicScore(grid map[int][]int, insideTrees *int,
 	}
 }
 
-func calculatePart1(grid map[int][]int, height int, length int, treeToCheck int, insideTrees *int) {
-	if calculatePart1Left(grid, height, length, treeToCheck) {
+func calculatePart1(grid map[int][]int, height int, length int, tree int, insideTrees *int) {
+	if calculateLinePart1(calculateLeft(grid, height, length), tree) {
 		*insideTrees++
-	} else if calculatePart1Right(grid, height, length, treeToCheck) {
+	} else if calculateLinePart1(calculateRight(grid, height, length), tree) {
 		*insideTrees++
-	} else if calculatePart1Top(grid, height, length, treeToCheck) {
+	} else if calculateLinePart1(calculateTop(grid, height, length), tree) {
 		*insideTrees++
-	} else if calculatePart1Bottom(grid, height, length, treeToCheck) {
+	} else if calculateLinePart1(calculateBottom(grid, height, length), tree) {
 		*insideTrees++
 	}
 }
@@ -103,22 +103,6 @@ func calculateBottom(grid map[int][]int, height int, length int) []int {
 		bottom = append(bottom, grid[i-1][length])
 	}
 	return bottom
-}
-
-func calculatePart1Left(grid map[int][]int, height int, length int, tree int) bool {
-	return calculateLinePart1(calculateLeft(grid, height, length), tree)
-}
-
-func calculatePart1Right(grid map[int][]int, height int, length int, tree int) bool {
-	return calculateLinePart1(calculateRight(grid, height, length), tree)
-}
-
-func calculatePart1Top(grid map[int][]int, height int, length int, tree int) bool {
-	return calculateLinePart1(calculateTop(grid, height, length), tree)
-}
-
-func calculatePart1Bottom(grid map[int][]int, height int, length int, tree int) bool {
-	return calculateLinePart1(calculateBottom(grid, height, length), tree)
 }
 
 func calculatePart2Left(grid map[int][]int, height int, length int, tree int) int {
