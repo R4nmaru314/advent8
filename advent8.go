@@ -64,14 +64,10 @@ func calculatePart1(left, right, top, bottom []int, tree int, insideTrees *int) 
 }
 
 func calculatePart2(left, right, top, bottom []int, tree int, maxScenicScore *int) {
-	reverseIntArrayPart2(left)
-	reverseIntArrayPart2(right)
-	reverseIntArrayPart2(top)
-	reverseIntArrayPart2(bottom)
-	leftScore := calculateLinePart2(left, tree)
-	rightScore := calculateLinePart2(right, tree)
-	topScore := calculateLinePart2(top, tree)
-	bottomScore := calculateLinePart2(bottom, tree)
+	leftScore := calculateLinePart2(reverseArrayPart2(left), tree)
+	rightScore := calculateLinePart2(reverseArrayPart2(right), tree)
+	topScore := calculateLinePart2(reverseArrayPart2(top), tree)
+	bottomScore := calculateLinePart2(reverseArrayPart2(bottom), tree)
 	scenicScore := leftScore * rightScore * topScore * bottomScore
 	if scenicScore > *maxScenicScore {
 		*maxScenicScore = scenicScore
@@ -137,9 +133,11 @@ func calculateLinePart2(array []int, tree int) int {
 	return len(array)
 }
 
-func reverseIntArrayPart2(array []int) {
-	length := len(array)
-	for i := 0; i < length/2; i++ {
-		array[i], array[length-i-1] = array[length-i-1], array[i]
-	}
+func reverseArrayPart2(array []int) []int {
+    length := len(array)
+    reversedArray := make([]int, length)
+    for i := 0; i < length; i++ {
+        reversedArray[i] = array[length-i-1]
+    }
+    return reversedArray
 }
